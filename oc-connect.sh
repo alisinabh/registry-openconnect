@@ -3,6 +3,13 @@
 OPENCONNECT_PID=""
 
 function startOpenConnect(){
+  echo "$(date) Add routes"
+
+  DEFAULT_GW=$(ip route | awk '/default/ { print $3 }')
+  ip route add 10.0.0.0/8 via $DEFAULT_GW 
+  ip route add 172.16.0.0/12 via $DEFAULT_GW 
+  ip route add 192.168.0.0/16 via $DEFAULT_GW 
+
   echo "$(date) start openconnect"
   echo "$OC_PASSWORD" | openconnect -b "$OC_HOST" -u "$OC_USER" --passwd-on-stdin --non-inter
   OPENCONNECT_PID=$(pidof openconnect)
